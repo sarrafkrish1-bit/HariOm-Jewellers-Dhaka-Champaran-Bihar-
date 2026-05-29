@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hari Om Jewellers Dhaka</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap');
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .heading { font-family: 'Playfair Display', sans-serif; }
+        .glass { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); }
+        .gold { background: linear-gradient(90deg, #D4AF37, #AA7C11, #D4AF37); }
+        .product-card { transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+        .product-card:hover { transform: translateY(-12px) scale(1.03); }
+        .floating { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
+    </style>
+</head>
+<body class="bg-[#0B0B0B] text-white">
+
+<!-- SPLASH -->
+<div id="splash" class="fixed inset-0 bg-black flex items-center justify-center z-[9999]">
+    <div class="text-center">
+        <div class="text-8xl animate-pulse">🕉</div>
+        <div class="heading text-3xl text-[#D4AF37] mt-6">श्री शिवाय नमस्तुभ्यं</div>
+    </div>
+</div>
+
+<!-- PERMISSION -->
+<div id="permission-screen" class="hidden fixed inset-0 bg-black flex items-center justify-center z-[9998]">
+    <div class="glass border border-[#D4AF37]/40 max-w-md w-full mx-4 rounded-3xl p-8">
+        <h1 class="heading text-4xl text-center mb-8 text-[#D4AF37]">Hari Om Jewellers Dhaka</h1>
+        <input id="perm-name" placeholder="Full Name" class="w-full mb-4 p-4 rounded-2xl bg-black/70">
+        <input id="perm-mobile" maxlength="10" placeholder="Mobile Number" class="w-full mb-4 p-4 rounded-2xl bg-black/70">
+        <input id="perm-email" type="email" placeholder="Email" class="w-full mb-6 p-4 rounded-2xl bg-black/70">
+        <button onclick="enterKingdom()" class="w-full py-5 gold text-black font-bold rounded-3xl">ENTER KINGDOM OF LUXURY</button>
+    </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" class="hidden">
+
+    <!-- HEADER -->
+    <header class="sticky top-0 bg-black/95 backdrop-blur-lg z-50 border-b border-[#D4AF37]/30">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-4xl">🕉</span>
+                <div>
+                    <h1 class="heading text-2xl">Hari Om Jewellers</h1>
+                    <p class="text-xs text-[#D4AF37]">Trusted Pure Gold Since 1998</p>
+                </div>
+            </div>
+            <button onclick="toggleMenu()" class="text-3xl"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </header>
+
+    <!-- RATES -->
+    <div class="bg-black py-3 border-b border-[#D4AF37]/30">
+        <div class="max-w-5xl mx-auto px-4 flex justify-between text-xs">
+            <div>22K: <span id="rate22" class="text-[#D4AF37]">₹17,350</span>/g</div>
+            <div>24K: <span id="rate24" class="text-[#D4AF37]">₹18,240</span>/g</div>
+            <div>Silver: <span id="ratesilver" class="text-[#D4AF37]">₹325</span>/g</div>
+        </div>
+    </div>
+
+    <!-- GOLD PASS PREMIUM POSTER -->
+    <div class="mx-4 mt-6 relative h-80 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/1015/800/600" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/30 to-black/80"></div>
+        <div class="absolute bottom-8 left-8 right-8">
+            <div class="inline-block bg-white/20 px-5 py-1 rounded-full text-xs">PREMIUM OFFER</div>
+            <h2 class="heading text-4xl text-white mt-3">Gold Pass</h2>
+            <p class="text-white/90">₹500 OFF on orders above ₹10,000</p>
+            <button onclick="showGoldPassModal()" class="mt-6 px-8 py-3.5 bg-white text-black rounded-3xl font-semibold">GENERATE GOLD PASS</button>
+        </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="px-4 py-6 flex gap-3 overflow-x-auto">
+        <button onclick="filterCategory('all')" class="px-6 py-2 bg-white/10 rounded-3xl text-sm">All</button>
+        <button onclick="filterCategory('men')" class="px-6 py-2 bg-white/10 rounded-3xl text-sm">Men's</button>
+        <button onclick="filterCategory('women')" class="px-6 py-2 bg-white/10 rounded-3xl text-sm">Women's</button>
+        <button onclick="filterCategory('girls')" class="px-6 py-2 bg-white/10 rounded-3xl text-sm">Girls</button>
+        <button onclick="filterCategory('boys')" class="px-6 py-2 bg-white/10 rounded-3xl text-sm">Boys</button>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="max-w-5xl mx-auto px-4">
+        <input id="search-bar" onkeyup="filterProducts()" placeholder="Search jewellery..." class="w-full bg-black/70 border border-[#D4AF37]/30 rounded-3xl px-6 py-4">
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="max-w-5xl mx-auto px-4 py-8">
+        <div id="products-container" class="grid grid-cols-2 gap-4"></div>
+    </div>
+
+    <!-- SUBMIT INFORMATION PREMIUM -->
+    <div class="mx-4 mb-12 glass rounded-3xl p-8">
+        <h2 class="heading text-3xl text-center mb-6">Submit Your Information</h2>
+        <input id="lead-name" placeholder="Full Name" class="w-full p-4 mb-4 rounded-2xl bg-black/70">
+        <input id="lead-mobile" maxlength="10" placeholder="Mobile Number" class="w-full p-4 mb-4 rounded-2xl bg-black/70">
+        <input id="lead-email" placeholder="Email Address" class="w-full p-4 mb-6 rounded-2xl bg-black/70">
+        <button onclick="submitLead()" class="w-full py-6 gold text-black font-bold rounded-3xl">GET EXCLUSIVE UPDATES</button>
+    </div>
+
+    <!-- FREE DELIVERY POSTER -->
+    <div class="mx-4 mb-12 relative h-64 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/201/800/500" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent"></div>
+        <div class="absolute left-8 top-8 text-white">
+            <div class="text-emerald-400 font-medium">FREE DELIVERY</div>
+            <div class="heading text-3xl">Above ₹40,000</div>
+            <div class="text-sm">All Over India via Indian Post</div>
+            <div class="text-xs mt-4">Outside India: Consult Owner</div>
+        </div>
+    </div>
+
+    <!-- TRUSTED NOTE -->
+    <div class="mx-4 mb-12 glass rounded-3xl p-6 text-center text-sm">
+        <p class="text-[#D4AF37] font-medium">This is a Trusted Website</p>
+        <p class="text-xs mt-2">• Pure Gold • BIS Hallmarked • Secure Payment • Genuine Products • Since 1998</p>
+        <p class="text-xs mt-1">You can safely buy from us with full confidence.</p>
+    </div>
+
+    <!-- MAP -->
+    <div class="max-w-5xl mx-auto px-4 py-8">
+        <h2 class="heading text-3xl mb-4">Visit Our Store</h2>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3579.5!2d85.166!3d26.67!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjjCsDM5JzAwLjAiTiA4NMKwNTEnMDAuMCJF!5e0!3m2!1sen!2sin!4v1700000000000" width="100%" height="280" style="border:0;border-radius:20px" allowfullscreen="" loading="lazy"></iframe>
+        <p class="text-center text-sm mt-4">Gudri Bazar, Dhaka, East Champaran, Bihar - 845418</p>
+    </div>
+
+    <!-- QUICK LINKS -->
+    <div class="max-w-5xl mx-auto px-4 py-8 grid grid-cols-2 gap-4">
+        <button onclick="showGoldPassModal()" class="py-6 glass rounded-3xl">Gold Pass</button>
+        <button onclick="document.getElementById('lead-name').focus()" class="py-6 glass rounded-3xl">Submit Info</button>
+        <a href="https://instagram.com" target="_blank" class="py-6 glass rounded-3xl text-center">Instagram</a>
+        <a href="https://youtube.com" target="_blank" class="py-6 glass rounded-3xl text-center">YouTube</a>
+    </div>
+
+    <footer class="bg-black py-12 text-center text-xs">
+        © 2026 Hari Om Jewellers Dhaka • All Rights Reserved
+    </footer>
+</div>
+
+<!-- FLOATING -->
+<div class="floating flex flex-col gap-3">
+    <a href="https://wa.me/919708740200" target="_blank" class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center shadow-2xl"><i class="fa-brands fa-whatsapp text-2xl"></i></a>
+    <button onclick="window.open('https://instagram.com','_blank')" class="w-12 h-12 bg-[#D4AF37] text-black rounded-full flex items-center justify-center shadow-2xl"><i class="fa-brands fa-instagram"></i></button>
+    <button onclick="window.open('https://youtube.com','_blank')" class="w-12 h-12 bg-[#D4AF37] text-black rounded-full flex items-center justify-center shadow-2xl"><i class="fa-brands fa-youtube"></i></button>
+    <button onclick="aiAssistant()" class="w-12 h-12 bg-[#D4AF37] text-black rounded-full flex items-center justify-center shadow-2xl"><i class="fa-solid fa-robot"></i></button>
+    <button onclick="showOwnerPanel()" class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center shadow-2xl text-xl">👑</button>
+</div>
+
+<!-- HAMBURGER -->
+<div id="menu" class="hidden fixed inset-0 bg-black/95 z-[9999] flex items-center justify-center">
+    <div class="glass rounded-3xl p-8 w-full max-w-xs">
+        <button onclick="toggleMenu()" class="float-right text-4xl">×</button>
+        <div class="mt-12 space-y-6 text-2xl">
+            <div onclick="filterCategory('all');toggleMenu()" class="cursor-pointer">All Jewellery</div>
+            <div onclick="filterCategory('men');toggleMenu()" class="cursor-pointer">Men's</div>
+            <div onclick="filterCategory('women');toggleMenu()" class="cursor-pointer">Women's</div>
+            <div onclick="filterCategory('girls');toggleMenu()" class="cursor-pointer">Girls</div>
+            <div onclick="filterCategory('boys');toggleMenu()" class="cursor-pointer">Boys</div>
+            <div onclick="showGoldPassModal();toggleMenu()" class="cursor-pointer">Gold Pass</div>
+        </div>
+    </div>
+</div>
+
+<!-- GOLD PASS MODAL -->
+<div id="goldpass-modal" class="hidden fixed inset-0 bg-black/90 z-[10000] flex items-center justify-center">
+    <div class="glass rounded-3xl p-8 max-w-md w-full mx-4">
+        <h2 class="heading text-3xl mb-6">Gold Pass Generator</h2>
+        <input id="gp-name" placeholder="Full Name" class="w-full p-4 mb-4 rounded-2xl bg-black/70">
+        <input id="gp-mobile" maxlength="10" placeholder="Mobile Number" class="w-full p-4 mb-4 rounded-2xl bg-black/70">
+        <input id="gp-email" placeholder="Email" class="w-full p-4 mb-6 rounded-2xl bg-black/70">
+        <button onclick="generateGoldPass()" class="w-full py-6 gold text-black font-bold rounded-3xl">GENERATE GOLD PASS</button>
+        <button onclick="hideGoldPassModal()" class="w-full mt-4 text-gray-400">Cancel</button>
+    </div>
+</div>
+
+<!-- OWNER PANEL -->
+<div id="owner-panel" class="hidden fixed inset-0 bg-black/95 z-[100000] overflow-auto">
+    <div class="max-w-2xl mx-auto bg-[#0B0B0B] min-h-screen">
+        <div class="sticky top-0 bg-black p-4 flex justify-between border-b border-[#D4AF37]">
+            <h2 class="heading text-3xl">Owner Control Center</h2>
+            <button onclick="hideOwnerPanel()" class="text-4xl">×</button>
+        </div>
+        <div class="p-6">
+            <div id="pass-screen">
+                <input id="owner-pass" type="password" placeholder="Password" class="w-full p-5 rounded-3xl bg-black border border-red-500">
+                <button onclick="checkOwnerPass()" class="w-full mt-4 py-5 bg-red-600 rounded-3xl">UNLOCK</button>
+            </div>
+            <div id="admin-content" class="hidden space-y-10">
+                <!-- Poster Management -->
+                <div>
+                    <h3 class="mb-4">Manage Posters</h3>
+                    <input id="new-poster-url" placeholder="Poster Image URL" class="w-full p-4 mb-3 rounded-2xl bg-black/70">
+                    <button onclick="addPoster()" class="w-full py-4 border border-[#D4AF37] rounded-3xl">Add Poster</button>
+                    <div id="posters-list" class="mt-6 space-y-3"></div>
+                </div>
+                <!-- Advertisement Video -->
+                <div>
+                    <h3 class="mb-4">Manage Advertisement Videos</h3>
+                    <input id="new-video-url" placeholder="Video URL (YouTube or direct)" class="w-full p-4 mb-3 rounded-2xl bg-black/70">
+                    <button onclick="addVideo()" class="w-full py-4 border border-[#D4AF37] rounded-3xl">Add Video</button>
+                </div>
+                <!-- Add Jewellery -->
+                <div>
+                    <h3 class="mb-4">Add Jewellery</h3>
+                    <input id="new-name" placeholder="Name" class="w-full p-4 mb-3 rounded-2xl bg-black/70">
+                    <select id="new-carat" class="w-full p-4 mb-3 rounded-2xl bg-black/70">
+                        <option value="22K">22K</option>
+                        <option value="24K">24K</option>
+                        <option value="Silver">Silver</option>
+                    </select>
+                    <select id="new-cat" class="w-full p-4 mb-3 rounded-2xl bg-black/70">
+                        <option value="women">Women</option>
+                        <option value="men">Men</option>
+                        <option value="girls">Girls</option>
+                        <option value="boys">Boys</option>
+                    </select>
+                    <input id="new-weight" type="number" placeholder="Weight (grams)" class="w-full p-4 mb-3 rounded-2xl bg-black/70">
+                    <input id="new-image-file" type="file" accept="image/*" class="w-full p-4 mb-3 rounded-2xl bg-black/70">
+                    <button onclick="addJewelleryFromOwner()" class="w-full py-5 gold text-black rounded-3xl">ADD JEWELLERY</button>
+                </div>
+                <!-- Products -->
+                <div>
+                    <h3 class="mb-4">All Jewellery</h3>
+                    <div id="owner-products-list" class="space-y-4"></div>
+                </div>
+                <!-- Orders History -->
+                <div>
+                    <h3 class="mb-4">Orders History</h3>
+                    <div id="orders-history" class="space-y-3 text-sm"></div>
+                </div>
+                <!-- Gold Passes -->
+                <div>
+                    <h3 class="mb-4">Gold Pass History</h3>
+                    <div id="owner-gp-list" class="space-y-3"></div>
+                </div>
+                <!-- Leads -->
+                <div>
+                    <h3 class="mb-4">Customer Leads</h3>
+                    <div id="owner-leads-list" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let products = JSON.parse(localStorage.getItem('hoj_products')) || [];
+    let posters = JSON.parse(localStorage.getItem('hoj_posters')) || ["https://picsum.photos/id/1015/800/600"];
+    let videos = JSON.parse(localStorage.getItem('hoj_videos')) || [];
+    let goldPasses = JSON.parse(localStorage.getItem('hoj_goldpasses')) || [];
+    let leads = JSON.parse(localStorage.getItem('hoj_leads')) || [];
+    let orders = JSON.parse(localStorage.getItem('hoj_orders')) || [];
+    let rates = {k22:17350, k24:18240, silver:325};
+
+    function saveData() {
+        localStorage.setItem('hoj_products', JSON.stringify(products));
+        localStorage.setItem('hoj_posters', JSON.stringify(posters));
+        localStorage.setItem('hoj_videos', JSON.stringify(videos));
+        localStorage.setItem('hoj_goldpasses', JSON.stringify(goldPasses));
+        localStorage.setItem('hoj_leads', JSON.stringify(leads));
+        localStorage.setItem('hoj_orders', JSON.stringify(orders));
+    }
+
+    function calculatePrice(weight, carat) {
+        let base = carat === "22K" ? rates.k22 : carat === "24K" ? rates.k24 : rates.silver;
+        return Math.round((base + base * 0.15) * 1.03);
+    }
+
+    function enterKingdom() {
+        if (document.getElementById('perm-name').value.trim() && document.getElementById('perm-mobile').value.length === 10) {
+            document.getElementById('permission-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            renderProducts();
+        } else alert("Please fill valid details");
+    }
+
+    function renderProducts(filtered = null) {
+        const container = document.getElementById('products-container');
+        container.innerHTML = '';
+        const list = filtered || products;
+        list.forEach(p => {
+            container.innerHTML += `
+                <div class="product-card bg-black/80 border border-[#D4AF37]/30 rounded-3xl overflow-hidden">
+                    <img src="${p.image}" class="w-full h-52 object-cover">
+                    <div class="p-4">
+                        <div class="font-medium">${p.name}</div>
+                        <div class="text-xs text-gray-400">${p.carat} • ${p.weight}g</div>
+                        <div class="text-[#D4AF37] text-2xl">₹${p.price.toLocaleString()}</div>
+                        <div class="grid grid-cols-4 gap-2 mt-5 text-xs">
+                            <button onclick="addToWishlist(${p.id});event.stopImmediatePropagation()" class="py-3 border border-white/30 rounded-2xl">❤️</button>
+                            <button onclick="addToCart(${p.id});event.stopImmediatePropagation()" class="py-3 border border-white/30 rounded-2xl">🛒</button>
+                            <button onclick="viewDesign(${p.id});event.stopImmediatePropagation()" class="py-3 border border-white/30 rounded-2xl">View</button>
+                            <button onclick="buyNow(${p.id});event.stopImmediatePropagation()" class="py-3 gold text-black rounded-2xl">Buy</button>
+                        </div>
+                    </div>
+                </div>`;
+        });
+    }
+
+    function filterProducts() {
+        const q = document.getElementById('search-bar').value.toLowerCase();
+        const filtered = products.filter(p => p.name.toLowerCase().includes(q));
+        renderProducts(filtered);
+    }
+
+    function filterCategory(cat) {
+        if (cat === 'all') return renderProducts();
+        renderProducts(products.filter(p => p.category === cat));
+    }
+
+    function showGoldPassModal() {
+        document.getElementById('goldpass-modal').classList.remove('hidden');
+    }
+
+    function hideGoldPassModal() {
+        document.getElementById('goldpass-modal').classList.add('hidden');
+    }
+
+    function generateGoldPass() {
+        const name = document.getElementById('gp-name').value.trim();
+        const mobile = document.getElementById('gp-mobile').value.trim();
+        const email = document.getElementById('gp-email').value.trim();
+        if (!name || mobile.length !== 10) return alert("Name & 10 digit mobile required");
+        if (goldPasses.some(g => g.mobile === mobile)) return alert("Already generated for this number");
+        const code = `HOJ-${Math.floor(100000 + Math.random() * 900000)}`;
+        goldPasses.unshift({code, name, mobile, email, date: new Date().toLocaleDateString('en-IN')});
+        saveData();
+        hideGoldPassModal();
+        alert(`✅ Gold Pass Generated!\nCode: ${code}\n₹500 OFF Applied`);
+    }
+
+    function submitLead() {
+        const name = document.getElementById('lead-name').value.trim();
+        const mobile = document.getElementById('lead-mobile').value.trim();
+        const email = document.getElementById('lead-email').value.trim();
+        if (name && mobile) {
+            leads.unshift({name, mobile, email, date: new Date().toLocaleDateString('en-IN')});
+            saveData();
+            alert("Thank you! Information submitted.");
+        }
+    }
+
+    async function addJewelleryFromOwner() {
+        const file = document.getElementById('new-image-file').files[0];
+        let image = "https://picsum.photos/id/237/600/600";
+        if (file) {
+            image = await new Promise(r => {
+                const reader = new FileReader();
+                reader.onload = () => r(reader.result);
+                reader.readAsDataURL(file);
+            });
+        }
+        const weight = parseFloat(document.getElementById('new-weight').value) || 10;
+        const carat = document.getElementById('new-carat').value;
+        const price = calculatePrice(weight, carat);
+        products.unshift({
+            id: Date.now(),
+            name: document.getElementById('new-name').value || "New Jewellery",
+            carat: carat,
+            weight: weight,
+            price: price,
+            image: image,
+            category: document.getElementById('new-cat').value
+        });
+        saveData();
+        renderProducts();
+        alert("Jewellery Added");
+    }
+
+    function buyNow(id) {
+        const p = products.find(x => x.id === id);
+        const html = `
+            <div class="p-6 max-h-[90vh] overflow-auto">
+                <h2 class="heading text-2xl">Order ${p.name}</h2>
+                <input id="buy-name" placeholder="Full Name" class="w-full p-4 mt-4 rounded-2xl bg-black/70">
+                <input id="buy-mobile" placeholder="Mobile" class="w-full p-4 mt-4 rounded-2xl bg-black/70">
+                <input id="buy-email" placeholder="Email" class="w-full p-4 mt-4 rounded-2xl bg-black/70">
+                <input id="buy-address" placeholder="Full Address" class="w-full p-4 mt-4 rounded-2xl bg-black/70">
+                <input id="buy-pin" placeholder="Pin Code" class="w-full p-4 mt-4 rounded-2xl bg-black/70">
+                <button onclick="placeOrder(${p.id}, '${p.name}', ${p.price})" class="w-full mt-8 py-6 gold text-black rounded-3xl">PLACE ORDER</button>
+                <p class="text-xs text-center mt-6 text-[#D4AF37]">Contact Owner: 9708740200 before payment</p>
+            </div>`;
+        showModal(html);
+    }
+
+    function placeOrder(id, name, price) {
+        const order = {
+            id: Date.now(),
+            productId: id,
+            name: name,
+            price: price,
+            customer: document.getElementById('buy-name').value,
+            mobile: document.getElementById('buy-mobile').value,
+            email: document.getElementById('buy-email').value,
+            address: document.getElementById('buy-address').value,
+            pin: document.getElementById('buy-pin').value,
+            date: new Date().toLocaleDateString('en-IN'),
+            status: "Pending"
+        };
+        orders.push(order);
+        saveData();
+        hideModal();
+        alert(`Order Placed for ${name} (₹${price})\n\nPay via PhonePe: 9142175541 or 9708740200`);
+    }
+
+    function viewDesign(id) {
+        alert("High Resolution Design View\n\nContact owner for more details.");
+    }
+
+    function addToCart(id) { alert("Added to Cart"); }
+    function addToWishlist(id) { alert("Added to Wishlist"); }
+
+    function aiAssistant() {
+        const utterance = new SpeechSynthesisUtterance("Namaste! Welcome to Hari Om Jewellers Dhaka. How can I help you?");
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function toggleMenu() {
+        document.getElementById('menu').classList.toggle('hidden');
+    }
+
+    function showOwnerPanel() {
+        document.getElementById('owner-panel').classList.remove('hidden');
+    }
+
+    function hideOwnerPanel() {
+        document.getElementById('owner-panel').classList.add('hidden');
+    }
+
+    function checkOwnerPass() {
+        if (document.getElementById('owner-pass').value === "hariom9708791421") {
+            document.getElementById('pass-screen').classList.add('hidden');
+            document.getElementById('admin-content').classList.remove('hidden');
+            renderOwnerContent();
+        } else alert("Incorrect Password");
+    }
+
+    function renderOwnerContent() {
+        let html = '';
+        products.forEach((p,i) => {
+            html += `<div class="flex gap-4 bg-black/70 p-4 rounded-2xl">
+                <img src="${p.image}" class="w-16 h-16 object-cover rounded-xl">
+                <div class="flex-1"><div>${p.name}</div><div class="text-xs">${p.carat} • ₹${p.price}</div></div>
+                <button onclick="deleteProduct(${i})" class="text-red-500">Delete</button>
+            </div>`;
+        });
+        document.getElementById('owner-products-list').innerHTML = html;
+
+        document.getElementById('owner-gp-list').innerHTML = goldPasses.map(g => `<div class="bg-black/70 p-4 rounded-2xl">${g.code} - ${g.name}</div>`).join('');
+        document.getElementById('owner-leads-list').innerHTML = leads.map(l => `<div class="bg-black/70 p-4 rounded-2xl">${l.name} - ${l.mobile}</div>`).join('');
+        document.getElementById('orders-history').innerHTML = orders.map(o => `<div class="bg-black/70 p-4 rounded-2xl">${o.name} - ₹${o.price} (${o.status})</div>`).join('');
+    }
+
+    function deleteProduct(i) {
+        if (confirm("Delete this jewellery?")) {
+            products.splice(i, 1);
+            saveData();
+            renderProducts();
+            renderOwnerContent();
+        }
+    }
+
+    function addPoster() {
+        const url = document.getElementById('new-poster-url').value;
+        if (url) {
+            posters.push(url);
+            localStorage.setItem('hoj_posters', JSON.stringify(posters));
+            alert("Poster Added");
+        }
+    }
+
+    function showModal(html) {
+        let modal = document.getElementById('modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'modal';
+            modal.className = 'fixed inset-0 bg-black/90 z-[100000] flex items-center justify-center';
+            modal.innerHTML = `<div class="glass rounded-3xl max-w-md w-full mx-4 p-6" id="modal-content"></div>`;
+            document.body.appendChild(modal);
+        }
+        document.getElementById('modal-content').innerHTML = html;
+        modal.classList.remove('hidden');
+    }
+
+    function hideModal() {
+        const modal = document.getElementById('modal');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    // INIT
+    window.onload = () => {
+        setTimeout(() => {
+            document.getElementById('splash').classList.add('hidden');
+            document.getElementById('permission-screen').classList.remove('hidden');
+        }, 1800);
+    };
+
+    window.enterKingdom = enterKingdom;
+    window.filterProducts = filterProducts;
+    window.filterCategory = filterCategory;
+    window.showGoldPassModal = showGoldPassModal;
+    window.hideGoldPassModal = hideGoldPassModal;
+    window.generateGoldPass = generateGoldPass;
+    window.submitLead = submitLead;
+    window.addJewelleryFromOwner = addJewelleryFromOwner;
+    window.buyNow = buyNow;
+    window.viewDesign = viewDesign;
+    window.addToCart = addToCart;
+    window.addToWishlist = addToWishlist;
+    window.aiAssistant = aiAssistant;
+    window.toggleMenu = toggleMenu;
+    window.showOwnerPanel = showOwnerPanel;
+    window.hideOwnerPanel = hideOwnerPanel;
+    window.checkOwnerPass = checkOwnerPass;
+    window.deleteProduct = deleteProduct;
+    window.addPoster = addPoster;
+</script>
+</body>
+</html>
